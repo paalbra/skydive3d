@@ -33,31 +33,29 @@ if __name__ == "__main__":
     print(f"{lat_se}/{lon_se}")
 
     # Align to tiles
-    temp_xtile, temp_ytile, _ = mercantile.tile(lon_nw, lat_nw, args.zoom_level)
-    lon_nw, lat_nw = mercantile.ul(temp_xtile, temp_ytile, args.zoom_level)
-    xtile_nw, ytile_nw, _ = mercantile.tile(lon_nw, lat_nw, args.zoom_level)
+    tile_nw_x, tile_nw_y, _ = mercantile.tile(lon_nw, lat_nw, args.zoom_level)
+    lon_nw, lat_nw = mercantile.ul(tile_nw_x, tile_nw_y, args.zoom_level)
 
-    temp_xtile, temp_ytile, _ = mercantile.tile(lon_se, lat_se, args.zoom_level)
-    lon_se, lat_se = mercantile.ul(temp_xtile, temp_ytile, args.zoom_level)
-    xtile_se, ytile_se, _ = mercantile.tile(lon_se, lat_se, args.zoom_level)
+    tile_se_x, tile_se_y, _ = mercantile.tile(lon_se, lat_se, args.zoom_level)
+    lon_se, lat_se = mercantile.ul(tile_se_x, tile_se_y, args.zoom_level)
 
-    print("nw", xtile_nw, ytile_nw)
-    print("se", xtile_se, ytile_se)
+    print("nw", tile_nw_x, tile_nw_y)
+    print("se", tile_se_x, tile_se_y)
 
     if args.download:
-        for y in range(ytile_nw, ytile_se):
-            for x in range(xtile_nw, xtile_se):
+        for y in range(tile_nw_y, tile_se_y):
+            for x in range(tile_nw_x, tile_se_x):
                 print(x, y)
                 content = download_tile(x, y, args.zoom_level)
                 with open(f"{args.zoom_level}-{x}-{y}.png", "wb") as f:
                     f.write(content)
 
-    merged_image = PIL.Image.new('RGB', ((xtile_se - xtile_nw)*256, (ytile_se - ytile_nw)*256))
-    for x in range(xtile_nw, xtile_se):
-        for y in range(ytile_nw, ytile_se):
+    merged_image = PIL.Image.new('RGB', ((tile_se_x - tile_nw_x)*256, (tile_se_y - tile_nw_y)*256))
+    for x in range(tile_nw_x, tile_se_x):
+        for y in range(tile_nw_y, tile_se_y):
             image = PIL.Image.open(f"{args.zoom_level}-{x}-{y}.png")
-            x_px = (x - xtile_nw)*256
-            y_px = (y - ytile_nw)*256
+            x_px = (x - tile_nw_x)*256
+            y_px = (y - tile_nw_y)*256
             merged_image.paste(image, (x_px, y_px))
 
     merged_image.save("merged.png")
