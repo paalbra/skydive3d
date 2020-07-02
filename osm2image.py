@@ -65,7 +65,3 @@ if __name__ == "__main__":
             merged_image.paste(image, (x_px, y_px))
 
     merged_image.save("merged.png")
-
-
-    random_pos = utm.from_latlon(59.2911, 10.3708)
-    print("TEST", (random_pos[0] - utm_nw[0], random_pos[1] - utm_nw[1]))
