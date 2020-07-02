@@ -1,17 +1,21 @@
+import argparse
 import json
-import sys
 import xml.etree.ElementTree as ET
 
 import utm
 
 if __name__ == "__main__":
-    tree = ET.parse(sys.argv[1])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file")
+    parser.add_argument("location")
+    args = parser.parse_args()
+
+    tree = ET.parse(args.file)
     root = tree.getroot()
 
     points = []
 
-    lat, lon = sys.argv[2].split("/")
-    lat, lon = float(lat), float(lon)
+    lat, lon = map(float, args.location.split("/"))
 
     origo = {"lat": lat, "lon": lon}
 
