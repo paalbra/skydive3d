@@ -29,9 +29,6 @@ if __name__ == "__main__":
     lat_nw, lon_nw = (lat + args.render_size, lon - args.render_size*2)
     lat_se, lon_se = (lat - args.render_size, lon + args.render_size*2)
 
-    print(f"{lat_nw}/{lon_nw}")
-    print(f"{lat_se}/{lon_se}")
-
     # Align to tiles
     tile_nw_x, tile_nw_y, _ = mercantile.tile(lon_nw, lat_nw, args.zoom_level)
     lon_nw, lat_nw = mercantile.ul(tile_nw_x, tile_nw_y, args.zoom_level)
@@ -39,8 +36,17 @@ if __name__ == "__main__":
     tile_se_x, tile_se_y, _ = mercantile.tile(lon_se, lat_se, args.zoom_level)
     lon_se, lat_se = mercantile.ul(tile_se_x, tile_se_y, args.zoom_level)
 
-    print("nw", tile_nw_x, tile_nw_y)
-    print("se", tile_se_x, tile_se_y)
+    utm_nw = utm.from_latlon(lat_nw, lon_nw)
+    utm_se = utm.from_latlon(lat_se, lon_se)
+
+    print(f"NW UTM: {utm_nw}")
+    print(f"SE UTM: {utm_se}")
+    print(f"Width: {utm_se[0] - utm_nw[0]}, height: {utm_se[1] - utm_nw[1]}")
+
+    print(f"NW tile: {tile_nw_x}/{tile_nw_y}")
+    print(f"SE tile: {tile_se_x}/{tile_se_y}")
+    print(f"NW location: {lat_nw}/{lon_nw}")
+    print(f"SE location: {lat_se}/{lon_se}")
 
     if args.download:
         for y in range(tile_nw_y, tile_se_y):
@@ -60,12 +66,6 @@ if __name__ == "__main__":
 
     merged_image.save("merged.png")
 
-    utm_nw = utm.from_latlon(lat_nw, lon_nw)
-    utm_se = utm.from_latlon(lat_se, lon_se)
-
-    print(utm_nw)
-    print(utm_se)
-    print(utm_se[0] - utm_nw[0], utm_se[1] - utm_nw[1])
 
     random_pos = utm.from_latlon(59.2911, 10.3708)
     print("TEST", (random_pos[0] - utm_nw[0], random_pos[1] - utm_nw[1]))
