@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skydive3d</title>
+<style>
+body {
+    margin: 0;
+}
+canvas {
+    display: block;
+}
+#info {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    padding: 1em;
+    border: 1px solid #000000;
+    z-index: 100;
+    display:block;
+    color: #000000;
+    background: #cccccc;
+}
+</style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+    <script src="https://rawgit.com/mrdoob/three.js/master/examples/js/utils/BufferGeometryUtils.js"></script>
+    <script src="https://rawgit.com/mrdoob/three.js/master/examples/js/libs/stats.min.js"></script>
+    <script src="https://rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+    <script src="data.js"></script>
+    <script src="skydive3d.js"></script>
+    <div id="info">skydive3d</div>
+</body>
+</html>
