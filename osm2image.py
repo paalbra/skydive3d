@@ -1,4 +1,4 @@
-import sys
+import argparse
 import time
 import urllib.request
 
@@ -17,43 +17,45 @@ def download_tile(xtile, ytile, zoom_level):
 
 
 if __name__ == "__main__":
-    print(sys.argv)
-    zoom_level = 14
-    render_size = 0.02  # In degrees
+    parser = argparse.ArgumentParser()
+    parser.add_argument("location")
+    parser.add_argument("--download", action="store_true")
+    parser.add_argument("--render-size", type=float, default=0.02)
+    parser.add_argument("--zoom-level", type=int, default=14)
+    args = parser.parse_args()
 
-    lat, lon = sys.argv[1].split("/")
-    lat, lon = float(lat), float(lon)
+    lat, lon = map(float, args.location.split("/"))
 
-    lat_nw, lon_nw = (lat + render_size, lon - render_size*2)
-    lat_se, lon_se = (lat - render_size, lon + render_size*2)
+    lat_nw, lon_nw = (lat + args.render_size, lon - args.render_size*2)
+    lat_se, lon_se = (lat - args.render_size, lon + args.render_size*2)
 
     print(f"{lat_nw}/{lon_nw}")
     print(f"{lat_se}/{lon_se}")
 
     # Align to tiles
-    temp_xtile, temp_ytile, _ = mercantile.tile(lon_nw, lat_nw, zoom_level)
-    lon_nw, lat_nw = mercantile.ul(temp_xtile, temp_ytile, zoom_level)
-    xtile_nw, ytile_nw, _ = mercantile.tile(lon_nw, lat_nw, zoom_level)
+    temp_xtile, temp_ytile, _ = mercantile.tile(lon_nw, lat_nw, args.zoom_level)
+    lon_nw, lat_nw = mercantile.ul(temp_xtile, temp_ytile, args.zoom_level)
+    xtile_nw, ytile_nw, _ = mercantile.tile(lon_nw, lat_nw, args.zoom_level)
 
-    temp_xtile, temp_ytile, _ = mercantile.tile(lon_se, lat_se, zoom_level)
-    lon_se, lat_se = mercantile.ul(temp_xtile, temp_ytile, zoom_level)
-    xtile_se, ytile_se, _ = mercantile.tile(lon_se, lat_se, zoom_level)
+    temp_xtile, temp_ytile, _ = mercantile.tile(lon_se, lat_se, args.zoom_level)
+    lon_se, lat_se = mercantile.ul(temp_xtile, temp_ytile, args.zoom_level)
+    xtile_se, ytile_se, _ = mercantile.tile(lon_se, lat_se, args.zoom_level)
 
     print("nw", xtile_nw, ytile_nw)
     print("se", xtile_se, ytile_se)
 
-    if sys.argv[2] == "d":
+    if args.download:
         for y in range(ytile_nw, ytile_se):
             for x in range(xtile_nw, xtile_se):
                 print(x, y)
-                content = download_tile(x, y, zoom_level)
-                with open(f"{zoom_level}-{x}-{y}.png", "wb") as f:
+                content = download_tile(x, y, args.zoom_level)
+                with open(f"{args.zoom_level}-{x}-{y}.png", "wb") as f:
                     f.write(content)
 
     merged_image = PIL.Image.new('RGB', ((xtile_se - xtile_nw)*256, (ytile_se - ytile_nw)*256))
     for x in range(xtile_nw, xtile_se):
         for y in range(ytile_nw, ytile_se):
-            image = PIL.Image.open(f"{zoom_level}-{x}-{y}.png")
+            image = PIL.Image.open(f"{args.zoom_level}-{x}-{y}.png")
             x_px = (x - xtile_nw)*256
             y_px = (y - ytile_nw)*256
             merged_image.paste(image, (x_px, y_px))
