@@ -44,7 +44,7 @@ def gpx2json(gpx_file, location):
 
         points.append(point)
 
-    print(json.dumps(points))
+    return points
 
 
 if __name__ == "__main__":
@@ -54,4 +54,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     with open(args.file) as f:
-        gpx2json(f, args.location)
+        print(json.dumps(gpx2json(f, args.location)))
