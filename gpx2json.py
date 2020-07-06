@@ -4,18 +4,14 @@ import xml.etree.ElementTree as ET
 
 import utm
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("file")
-    parser.add_argument("location")
-    args = parser.parse_args()
 
-    tree = ET.parse(args.file)
+def gpx2json(gpx_file, location):
+    tree = ET.parse(gpx_file)
     root = tree.getroot()
 
     points = []
 
-    lat, lon = map(float, args.location.split("/"))
+    lat, lon = map(float, location.split("/"))
 
     origo = {"lat": lat, "lon": lon}
 
@@ -49,3 +45,13 @@ if __name__ == "__main__":
         points.append(point)
 
     print(json.dumps(points))
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file")
+    parser.add_argument("location")
+    args = parser.parse_args()
+
+    with open(args.file) as f:
+        gpx2json(f, args.location)
