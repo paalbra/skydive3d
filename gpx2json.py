@@ -1,13 +1,24 @@
 import argparse
 import json
+import re
 import xml.etree.ElementTree as ET
 
 import utm
 
 
+def get_namespace(tree):
+    match = re.match("^{(.*)}", tree.getroot().tag)
+    if match:
+        return match.groups()[0]
+    else:
+        return ""
+
+
 def gpx2json(gpx_file, location):
     tree = ET.parse(gpx_file)
     root = tree.getroot()
+
+    namespace = {"": get_namespace(tree)}
 
     points = []
 
@@ -17,9 +28,9 @@ def gpx2json(gpx_file, location):
 
     utm_origo = utm.from_latlon(origo["lat"], origo["lon"])
 
-    for trkpt in root.findall(".//trkpt"):
-        ele = float(trkpt.find("ele").text)
-        time = trkpt.find("time").text
+    for trkpt in root.findall(".//trkpt", namespace):
+        ele = float(trkpt.find("ele", namespace).text)
+        time = trkpt.find("time", namespace).text
         lat = float(trkpt.attrib["lat"])
         lon = float(trkpt.attrib["lon"])
 
