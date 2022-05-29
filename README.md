@@ -26,7 +26,8 @@ Use the data from above:
 $ mv merged.png html
 $ echo -en "width = 5040;\nheight = 4770;\npoints = " > html/data.js
 $ python gpx2json.py file.gpx 59.966009702748345/10.72265625 | jq 'map({"x": .x, "z": .z, "ele": .ele})' >> html/data.js
-$ firefox html/index.html
+$ python3 -m http.server --directory html
+$ firefox http://localhost:8000/
 ```
 
 There is a sample data.js in example/data.js.
