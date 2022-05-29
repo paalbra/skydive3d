@@ -14,7 +14,7 @@ def get_namespace(tree):
         return ""
 
 
-def gpx2json(gpx_file, location):
+def gpx2json(gpx_file, location, elevation_mul=1):
     tree = ET.parse(gpx_file)
     root = tree.getroot()
 
@@ -47,7 +47,7 @@ def gpx2json(gpx_file, location):
             "time": time,
             "lat": lat,
             "lon": lon,
-            "ele": ele,
+            "ele": ele * elevation_mul,
             "utm": utm_coordinate,
             "x": x,
             "z": z,
@@ -62,7 +62,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("file")
     parser.add_argument("location")
+    parser.add_argument("--elevation-mul", type=int, default=1)
     args = parser.parse_args()
 
     with open(args.file) as f:
-        print(json.dumps(gpx2json(f, args.location)))
+        print(json.dumps(gpx2json(f, args.location, args.elevation_mul)))
