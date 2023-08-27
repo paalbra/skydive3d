@@ -1,3 +1,7 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import Stats from 'three/libs/stats.module.js';
+
 let camera;
 let controls;
 let renderer;
@@ -16,7 +20,7 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 10, 20000);
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls = new OrbitControls(camera, renderer.domElement);
     camera.position.set(7000, 7000, 7000);
     camera.lookAt(0, 0, 0);
 
@@ -42,7 +46,7 @@ function init() {
 
     var loader = new THREE.TextureLoader();
     loader.load("merged.png", function ( texture ) {
-      var geometry = new THREE.PlaneBufferGeometry(width, height, width/100, height/100);
+      var geometry = new THREE.PlaneGeometry(width, height, width/100, height/100);
       var material = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
       var mesh = new THREE.Mesh(geometry, material);
       mesh.rotation.x = -(Math.PI / 2);
@@ -64,16 +68,16 @@ function init() {
 function addSeries(path, color, radius, opacity, closed) {
     var points = []
     for (var index in path) {
-        element = path[index];
-        easting = element["x"];
-        ele = element["ele"];
-        northing = element["z"];
+        var element = path[index];
+        var easting = element["x"];
+        var ele = element["ele"];
+        var northing = element["z"];
         points.push(new THREE.Vector3(easting, ele, northing));
     }
     var curve = new THREE.CatmullRomCurve3(points);
     var tubularSegments = points.length;
     var radialSegments = 4;
-    var geometry = new THREE.TubeBufferGeometry(curve, tubularSegments, radius, radialSegments, closed);
+    var geometry = new THREE.TubeGeometry(curve, tubularSegments, radius, radialSegments, closed);
     var material = new THREE.MeshBasicMaterial({color: color, transparent: true, opacity: opacity, wireframe: false});
     var curveObject = new THREE.Mesh(geometry, material);
     scene.add(curveObject);

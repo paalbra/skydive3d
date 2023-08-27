@@ -23,13 +23,18 @@ canvas {
 }
 </style>
 </head>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://rawgit.com/mrdoob/three.js/r155/build/three.module.min.js",
+      "three/addons/": "https://rawgit.com/mrdoob/three.js/r155/examples/jsm/",
+      "three/libs/": "https://rawgit.com/mrdoob/three.js/r155/examples/jsm/libs/"
+    }
+  }
+</script>
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://rawgit.com/mrdoob/three.js/r134/examples/js/utils/BufferGeometryUtils.js"></script>
-    <script src="https://rawgit.com/mrdoob/three.js/r134/examples/js/libs/stats.min.js"></script>
-    <script src="https://rawgit.com/mrdoob/three.js/r134/examples/js/controls/OrbitControls.js"></script>
     <script src="data.js"></script>
-    <script src="skydive3d.js"></script>
+    <script type="module" src="skydive3d.js"></script>
     <div id="info">skydive3d</div>
 </body>
 </html>
