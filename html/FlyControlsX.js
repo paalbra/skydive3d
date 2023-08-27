@@ -9,8 +9,6 @@ class FlyControlsX extends PointerLockControls {
         this.minSpeed = 50;
         this.prevTime = performance.now();
 
-        this.direction = new THREE.Vector3();
-
         this.doMoveForward = false;
         this.doMoveBackward = false;
         this.doMoveLeft = false;
@@ -30,13 +28,13 @@ class FlyControlsX extends PointerLockControls {
         if(this.isLocked === true) {
             const delta = (time - this.prevTime) / 1000;
 
-            this.direction.z = Number(this.doMoveForward) - Number(this.doMoveBackward);
-            this.direction.x = Number(this.doMoveRight) - Number(this.doMoveLeft);
-            this.direction.y = Number(this.doMoveUp) - Number(this.doMoveDown);
-            this.moveRight(this.direction.x * delta * this.speed);
-            this.moveForward(this.direction.z * delta * this.speed);
+            let direction = new THREE.Vector3();
+            direction.z = (Number(this.doMoveForward) - Number(this.doMoveBackward)) * -1; // Forward is negative value
+            direction.x = Number(this.doMoveRight) - Number(this.doMoveLeft);
+            direction.y = Number(this.doMoveUp) - Number(this.doMoveDown);
 
-            this.getObject().position.y += this.direction.y * delta * this.speed;
+            direction.applyQuaternion(this.camera.quaternion);
+            this.camera.position.addScaledVector(direction, delta * this.speed)
         }
 
         this.prevTime = time;
