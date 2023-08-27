@@ -39,10 +39,10 @@ function init() {
     var axes = new THREE.AxesHelper(1000);
     scene.add(axes);
 
-    var ambient_light = new THREE.AmbientLight(0xffffff, 0.2);
+    var ambient_light = new THREE.AmbientLight(0xffffff, 1);
     scene.add(ambient_light);
 
-    var directional_light = new THREE.DirectionalLight(0xffffff, 1);
+    var directional_light = new THREE.DirectionalLight(0xffffff, 2);
     directional_light.position.set(1000, 10000, 1000);
     directional_light.castShadow = true;
     scene.add(directional_light);
@@ -90,7 +90,7 @@ function addSeries(path, color, radius, opacity, closed) {
     var tubularSegments = points.length;
     var radialSegments = 4;
     var geometry = new THREE.TubeGeometry(curve, tubularSegments, radius, radialSegments, closed);
-    var material = new THREE.MeshBasicMaterial({color: color, transparent: true, opacity: opacity, wireframe: false});
+    var material = new THREE.MeshLambertMaterial({color: color, transparent: true, opacity: opacity, wireframe: false});
     var curveObject = new THREE.Mesh(geometry, material);
     scene.add(curveObject);
 }
