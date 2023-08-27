@@ -1,6 +1,7 @@
 import argparse
 import time
 import urllib.request
+import pathlib
 
 import mercantile
 import PIL.Image
@@ -22,7 +23,22 @@ if __name__ == "__main__":
     parser.add_argument("--download", action="store_true")
     parser.add_argument("--render-size", type=float, default=0.02)
     parser.add_argument("--zoom-level", type=int, default=14)
+    parser.add_argument("--cache", default="cache")
+    parser.add_argument("--output", default="html")
     args = parser.parse_args()
+
+    cache_directory = pathlib.Path(args.cache)
+    output_directory = pathlib.Path(args.output)
+
+    if not cache_directory.exists():
+        cache_directory.mkdir()
+    if not output_directory.exists():
+        output_directory.mkdir()
+
+    if cache_directory.exists() and not cache_directory.is_dir():
+        raise Exception(f"Cache path ('{cache_directory}') is not a directory!")
+    if output_directory.exists() and not output_directory.is_dir():
+        raise Exception(f"Output path ('{output_directory}') is not a directory!")
 
     lat, lon = map(float, args.location.split("/"))
 
@@ -53,15 +69,15 @@ if __name__ == "__main__":
             for x in range(tile_nw_x, tile_se_x):
                 print(x, y)
                 content = download_tile(x, y, args.zoom_level)
-                with open(f"{args.zoom_level}-{x}-{y}.png", "wb") as f:
+                with open(pathlib.Path(cache_directory / f"{args.zoom_level}-{x}-{y}.png"), "wb") as f:
                     f.write(content)
 
     merged_image = PIL.Image.new('RGB', ((tile_se_x - tile_nw_x)*256, (tile_se_y - tile_nw_y)*256))
     for x in range(tile_nw_x, tile_se_x):
         for y in range(tile_nw_y, tile_se_y):
-            image = PIL.Image.open(f"{args.zoom_level}-{x}-{y}.png")
+            image = PIL.Image.open(pathlib.Path(cache_directory / f"{args.zoom_level}-{x}-{y}.png"))
             x_px = (x - tile_nw_x)*256
             y_px = (y - tile_nw_y)*256
             merged_image.paste(image, (x_px, y_px))
 
-    merged_image.save("merged.png")
+    merged_image.save(pathlib.Path(output_directory / "merged.png"))
