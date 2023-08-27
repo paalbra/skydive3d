@@ -24,8 +24,10 @@ Width: 5040.294292219332, height: -4770.107384481467
 Use the data from above:
 ```
 mv merged.png html
-echo -en "width = 5040;\nheight = 4770;\npoints = " > html/data.js
-python gpx2json.py file.gpx 59.966009702748345/10.72265625 | jq 'map({"x": .x, "z": .z, "ele": .ele})' >> html/data.js
+echo -e "width = 5040;\nheight = 4770;\nseries = [];" > html/data.js
+echo -en "series[0] = " > html/data.js
+python gpx2json.py file.gpx 59.966009702748345/10.72265625 | jq -c 'map({"x": .x, "z": .z, "ele": .ele})' | perl -pe 's/\n//' >> html/data.js
+echo ";" >> html/data.js
 python3 -m http.server --directory html
 firefox http://localhost:8000/
 ```

@@ -54,7 +54,9 @@ function init() {
       scene.add(mesh);
     });
 
-    addSeries(points, 0x0000aa, 8, 0.9, false);
+    for (var index in series) {
+        addSeries(series[index], getRandomColor(), 8, 0.9, false);
+    }
 
     drawThing(0, 1000, 0, getRandomColor(), 200);
 
