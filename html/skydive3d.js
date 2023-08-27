@@ -47,7 +47,7 @@ function init() {
     directional_light.castShadow = true;
     scene.add(directional_light);
 
-    scene.fog = new THREE.Fog(0xffffff, 10000, 20000);
+    scene.fog = new THREE.Fog(0xcccccc, 10000, 20000);
 
     stats = new Stats();
     stats.showPanel(0);
