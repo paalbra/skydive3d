@@ -8,6 +8,15 @@ let renderer;
 let scene;
 let stats;
 
+const COLORS = [
+    0xaa0000,
+    0x00aa00,
+    0x0000aa,
+    0xaaaa00,
+    0xaa00aa,
+    0x00aaaa
+];
+
 function init() {
     scene = new THREE.Scene();
 
@@ -55,7 +64,8 @@ function init() {
     });
 
     for (var index in series) {
-        addSeries(series[index], getRandomColor(), 8, 0.9, false);
+        let color = COLORS[index] || getRandomColor();
+        addSeries(series[index], color, 8, 0.9, false);
     }
 
     drawThing(0, 1000, 0, getRandomColor(), 200);
