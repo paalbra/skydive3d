@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { FlyControlsX } from './FlyControlsX.js';
 import Stats from 'three/libs/stats.module.js';
 
 let camera;
@@ -20,7 +20,7 @@ function init() {
     document.body.appendChild(renderer.domElement);
 
     camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 10, 20000);
-    controls = new OrbitControls(camera, renderer.domElement);
+    controls = new FlyControlsX(camera, renderer.domElement);
     camera.position.set(7000, 7000, 7000);
     camera.lookAt(0, 0, 0);
 
